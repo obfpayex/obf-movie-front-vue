@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using moviejs.Models;
@@ -13,14 +15,14 @@ namespace moviejs.Controllers
     [Route("api/[controller]")]
     public class MovieController : Controller
     {
-/*        private readonly IMovieProvider movieProvider;
+        /*        private readonly IMovieProvider movieProvider;
 
-        public MovieController(IMovieProvider movieProvider)
-        {
-            this.movieProvider = movieProvider;
-        }
-        */
-
+                public MovieController(IMovieProvider movieProvider)
+                {
+                    this.movieProvider = movieProvider;
+                }
+                */
+        private static readonly HttpClient client = new HttpClient();
 
         [HttpGet("[action]")]
         public IActionResult getLatest()
@@ -38,13 +40,9 @@ namespace moviejs.Controllers
         [HttpGet("[action]")]
         public IActionResult getMovie([FromQuery(Name = "oid")] string oid)
         {
-            //return Ok(movieProvider.GetLatestMovie());
-            return Ok(new Movie
-            {
-                OriginalTitle = "One movie",
-                ProductionYear = Int32.Parse(oid),
-                Summary = "summary One Movie"
-            });
+            
+            return Ok(getMovieFromAsync(oid));
+
         }
 
 
@@ -91,5 +89,38 @@ namespace moviejs.Controllers
         }
 
 
+        private Movie getMovieFromAsync(string oid)
+        {
+           // ProcessRepositories();
+            return new Movie
+            {
+                OriginalTitle = "One movie",
+                ProductionYear = Int32.Parse(oid),
+                Summary = "summary One Movie"
+            };
+        }
+
+
+        private static async Task ProcessRepositories()
+        {
+            //We will make a GET request to a really cool website...
+
+            string baseUrl = "http://localhost:20200/api/movie/10004";
+            //The 'using' will help to prevent memory leaks.
+            //Create a new instance of HttpClient
+            using (HttpClient client = new HttpClient())
+
+            //Setting up the response...         
+
+            using (HttpResponseMessage res = await client.GetAsync(baseUrl))
+            using (HttpContent content = res.Content)
+            {
+                string data = await content.ReadAsStringAsync();
+                if (data != null)
+                {
+                    Console.WriteLine(data);
+                }
+            }
+        }
     }
 }

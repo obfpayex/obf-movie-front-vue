@@ -18,8 +18,8 @@
       </tr>
       </thead>
       <tbody>
-      <tr :class="index % 2 == 0 ? 'bg-white' : 'bg-light'" v-for="(movie, index) in movieList" :key="index">
-        <td><li @click="getMovie(movie.oid)">{{ movie.originalTitle }}</li> </td>
+      <tr :class="index % 2 == 0 ? 'bg-white' : 'bg-light'" v-for="(movie, index) in movieList" :key="index" v-on:click="getMovie(movie.oid)">
+        <td>{{ movie.originalTitle }}</td>
         <td>{{ movie.productionYear }}</td>
         <td>{{ movie.summary }}</td>
       </tr>
@@ -50,10 +50,8 @@
     methods: {
       async searchMovie () {
         try {
-          console.log(`/api/movie/search?searchMovie=${this.originalTitleSearch}`)
           let response = await this.$http.get(`/api/movie/search?searchMovie=${this.originalTitleSearch}`)
 
-          console.log(response.data)
           this.movieList = response.data
         } catch (err) {
           window.alert(err)
