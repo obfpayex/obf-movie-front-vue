@@ -89,9 +89,9 @@ namespace moviejs.Controllers
         }
 
 
-        private Movie getMovieFromAsync(string oid)
+        private async Task<Movie> getMovieFromAsync(string oid)
         {
-           // ProcessRepositories();
+            await ProcessRepositories();
             return new Movie
             {
                 OriginalTitle = "One movie",
@@ -108,19 +108,19 @@ namespace moviejs.Controllers
             string baseUrl = "http://localhost:20200/api/movie/10004";
             //The 'using' will help to prevent memory leaks.
             //Create a new instance of HttpClient
-            using (HttpClient client = new HttpClient())
 
-            //Setting up the response...         
+                       using (HttpClient client = new HttpClient())
 
-            using (HttpResponseMessage res = await client.GetAsync(baseUrl))
-            using (HttpContent content = res.Content)
-            {
-                string data = await content.ReadAsStringAsync();
-                if (data != null)
-                {
-                    Console.WriteLine(data);
-                }
-            }
+
+                        using (HttpResponseMessage res = await client.GetAsync(baseUrl))
+                        using (HttpContent content = res.Content)
+                        {
+                            string data = await content.ReadAsStringAsync();
+                            if (data != null)
+                            {
+                                Console.WriteLine(data);
+                            }
+                        }
         }
     }
 }
